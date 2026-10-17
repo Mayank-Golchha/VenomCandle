@@ -1,0 +1,382 @@
+<a href="https://fyers.in/"><img src="https://assets.fyers.in/images/logo.svg" align="right" /></a>
+
+# Fyers API C SDK : fyers-api-c - v1.4.0
+
+The official Fyers C SDK for API-V3 Users [FYERS API](https://fyers.in/products/api/).
+
+Fyers API is a set of REST-like APIs that provide integration with our in-house trading platform with which you can build your own customized trading applications.
+
+## Documentation
+
+- [Fyers API documentation](https://myapi.fyers.in/docsv3)
+
+## Requirements
+
+- CMake 3.15+
+- C compiler (C11)
+- **Dependencies:** libcurl, cJSON, OpenSSL, libwebsockets
+
+| Package | Linux (apt) | macOS (Homebrew) | Windows (vcpkg) |
+|---------|-------------|------------------|-----------------|
+| cmake | `cmake` | `cmake` | CMake installer |
+| curl | `libcurl4-openssl-dev` | `curl` | `curl` |
+| cJSON | `libcjson-dev` | `cjson` | `cjson` |
+| OpenSSL | `libssl-dev` | `openssl` | `openssl` |
+| libwebsockets | `libwebsockets-dev` | `libwebsockets` | `libwebsockets` |
+
+## Getting the source
+
+Clone the repository (or download and extract the source), then build from that directory:
+
+```bash
+git clone <repository-url> fyers-c-sdk
+cd fyers-c-sdk
+```
+
+Replace `<repository-url>` with the actual repo URL. All build and install steps below are run from this SDK root directory.
+
+## Usage
+
+### Linux (Ubuntu/Debian)
+
+Install dependencies and build:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y build-essential cmake \
+    libcurl4-openssl-dev libcjson-dev libssl-dev libwebsockets-dev
+
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+make
+sudo make install
+sudo ldconfig
+```
+
+### macOS
+
+```bash
+brew install cmake curl cjson openssl libwebsockets
+
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+make
+sudo make install
+```
+
+### Windows
+
+1. Install [Visual Studio](https://visualstudio.microsoft.com/) (2019+) with "Desktop development with C++"
+2. Install [CMake](https://cmake.org/download/)
+3. Install [vcpkg](https://vcpkg.io/) and install dependencies for **x64**:
+
+```powershell
+vcpkg install cjson:x64-windows curl:x64-windows openssl:x64-windows libwebsockets:x64-windows
+```
+
+4. Build (from the SDK root directory):
+
+```powershell
+cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -A x64
+cmake --build build --config Release
+cmake --install build --config Release --prefix C:\fyers-sdk
+```
+
+Use your actual vcpkg path if it is not `C:\vcpkg`. Add the install `bin/` directory to your PATH, or copy `fyers-api-c.dll` next to your executable.
+
+### Link in Your Project
+
+**Direct compile (gcc/clang):**
+```bash
+gcc main.c -lfyers-api-c -o myapp
+```
+
+**CMake:**
+```cmake
+find_package(fyers-api-c REQUIRED)
+add_executable(myapp main.c)
+target_link_libraries(myapp PRIVATE fyers-api-c::fyers-api-c)
+```
+
+**Include headers:**
+```c
+#include <fyers_api.h>
+#include <fyers_model.h>
+#include <fyers_session.h>
+#include <fyers_data_ws.h>
+#include <fyers_order_ws.h>
+```
+
+### Quick Start
+
+```c
+#include <fyers_api.h>
+#include <fyers_session.h>
+#include <fyers_model.h>
+
+int main(void) {
+    fyers_session_t* session = fyers_session_create(
+        "YOUR_CLIENT_ID", "YOUR_REDIRECT_URI", "YOUR_SECRET_KEY"
+    );
+    generate_authcode(session);
+    fyers_session_set_authcode(session, "AUTH_CODE_FROM_REDIRECT");
+    generate_token(session);
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    fyers_model_t* model = fyers_model_create(
+        client_id, access_token, false, NULL, FYERS_LOG_INFO
+    );
+
+    fyers_response_t* response = fyers_model_get_profile(model);
+    if (response && response->error == FYERS_OK)
+        printf("Profile: %.*s\n", (int)response->size, response->data);
+    fyers_response_destroy(response);
+
+    fyers_model_destroy(model);
+    fyers_session_destroy(session);
+    fyers_cleanup();
+    return 0;
+}
+```
+
+Try running the sample code from the [Fyers API documentation](https://myapi.fyers.in/docsv3).
+
+## APIs Supported by Fyers C SDK
+
+#### Authentication
+
+* Generate Auth Code
+* Generate Access Token
+* Generate Token with Refresh Token
+
+#### User
+
+* Profile
+* Funds
+* Holdings
+* Logout
+
+#### Transaction Info
+
+* Orders
+* Positions
+* Trades
+
+#### Order Placement
+
+* Place Order
+* Place Multi Order
+* Place Basket Orders
+* Place MultiLeg Order
+
+#### GTT Orders
+
+* GTT Single
+* GTT Modify Order
+* GTT Cancel Order
+* GTT Order Book
+
+#### Smart Orders
+
+* Smart Limit
+* Smart Trail
+* Smart Step
+* Smart SIP
+* Modify Smart Order
+* Cancel Smart Order
+* Pause Smart Order
+* Resume Smart Order
+* Smart Order Book
+
+#### Smart Exit
+
+* Create Smart Exit
+* Fetch Smart Exit
+* Modify / Activate / Deactivate Smart Exit
+
+#### Other Transactions
+
+* Modify Orders
+* Modify Basket Orders
+* Cancel Order
+* Cancel Basket Orders
+* Exit Position
+* Exit All Positions
+* Convert Position
+* Attach Position Legs
+
+#### Broker Config
+
+* Market Status
+
+#### Data Api
+
+* History
+* Quotes
+* Market Depth
+* Option Chain
+* History Expiry Dates
+* History Underlying Symbols
+* History FNO Expired
+* Futures Chain
+
+#### Reports
+
+* Order History
+* Trade History
+* Charges History
+* Realised Profit
+* Tax PnL History
+* Ledger History
+
+#### Price Alert
+
+* Create Price Alert
+* Get Price Alerts
+* Modify Price Alert
+* Delete Price Alert
+* Enable/Disable Price Alert
+
+## TP/SL Smart Orders (BO/CO migration)
+
+Product types `BO` and `CO` are **deprecated** and rejected by the API. Use standard products (`CNC`, `INTRADAY`, `MARGIN`, `MTF`) with offset-based TP/SL fields:
+
+| Field | Meaning |
+|-------|---------|
+| `takeProfit` | Profit target **offset** (not absolute price) |
+| `stopLoss` | Stop loss **offset** |
+| `legType` | `1` = points (default), `2` = percent of entry |
+
+TP/SL is supported only on sync endpoints (`/orders/sync`, `/multi-order/sync`). Create the model with `is_async = false`. Orderbook and position responses may include `takeProfit`, `stopLoss`, and `legType` when legs are active.
+
+```c
+/* Place order — TP/SL/legType omitted (not mandatory) */
+fyers_model_place_order(model, order_json);
+
+/* Optionally add any of takeProfit / stopLoss / legType */
+cJSON_AddNumberToObject(json, "takeProfit", 10.5);
+cJSON_AddNumberToObject(json, "stopLoss", 5.0);
+cJSON_AddNumberToObject(json, "legType", FYERS_LEG_TYPE_POINTS); /* optional; defaults to 1 */
+fyers_model_place_order(model, cJSON_Print(json));
+
+/* Modify: update TP, remove SL (JSON null) */
+cJSON_AddNumberToObject(mod, "takeProfit", 15.0);
+cJSON_AddNullToObject(mod, "stopLoss");
+fyers_model_modify_order(model, cJSON_PrintUnformatted(mod));
+
+/* Attach legs to an open position */
+cJSON_AddStringToObject(pos, "positionId", "NSE:SBIN-EQ-INTRADAY");
+cJSON_AddNumberToObject(pos, "takeProfit", 2.5);
+cJSON_AddNumberToObject(pos, "stopLoss", 1.5);
+cJSON_AddNumberToObject(pos, "legType", FYERS_LEG_TYPE_PERCENT);
+fyers_model_attach_position_legs(model, cJSON_PrintUnformatted(pos));
+```
+
+## Expired F&O Historical Data
+
+`GET https://api-t1.fyers.in/data/history/fno/expired/expiry-dates?symbol=...&range_from=...&range_to=...&date_format=...`
+
+```c
+cJSON* json = cJSON_CreateObject();
+cJSON_AddStringToObject(json, "symbol", "NSE:NIFTY50-INDEX");
+cJSON_AddStringToObject(json, "range_from", "2024-01-01");
+cJSON_AddStringToObject(json, "range_to", "2024-12-31");
+cJSON_AddStringToObject(json, "date_format", "1");
+char* params = cJSON_PrintUnformatted(json);
+fyers_response_t* response = fyers_model_get_history_expiry_dates(model, params);
+```
+
+`GET https://api-t1.fyers.in/data/history/fno/expired/underlying-symbols?symbol=...&expiry_date=...`
+
+```c
+cJSON* json = cJSON_CreateObject();
+cJSON_AddStringToObject(json, "symbol", "NSE:NIFTY50-INDEX");
+cJSON_AddStringToObject(json, "expiry_date", "2024-11-28");
+char* params = cJSON_PrintUnformatted(json);
+fyers_response_t* response = fyers_model_get_history_underlying_symbols(model, params);
+```
+
+`GET https://api-t1.fyers.in/data/history/fno/expired/historical-data?symbol=...&resolution=...&date_format=...&range_from=...&range_to=...&include_greeks=...&include_oi=...`
+
+```c
+cJSON* json = cJSON_CreateObject();
+cJSON_AddStringToObject(json, "symbol", "NSE:NIFTY24NOV22500CE");
+cJSON_AddStringToObject(json, "resolution", "5");
+cJSON_AddStringToObject(json, "date_format", "1");
+cJSON_AddStringToObject(json, "range_from", "2024-11-01");
+cJSON_AddStringToObject(json, "range_to", "2024-11-28");
+cJSON_AddStringToObject(json, "include_greeks", "1");
+cJSON_AddStringToObject(json, "include_oi", "1");
+char* params = cJSON_PrintUnformatted(json);
+fyers_response_t* response = fyers_model_get_history_fno_expired(model, params);
+```
+
+## Futures Chain
+
+`GET https://api-t1.fyers.in/data/futures-chain?symbol=...`
+
+```c
+fyers_response_t* response = fyers_model_get_futures_chain(model, "NSE:NIFTY50-INDEX");
+if (response && response->error == FYERS_OK)
+    printf("Futures chain: %.*s\n", (int)response->size, response->data);
+fyers_response_destroy(response);
+```
+
+## Web Socket
+
+#### General Socket
+
+* General Socket (orders)
+* General Socket (trades)
+* General Socket (positions)
+* General Socket (general)
+
+#### Market Data
+
+* Market Data Symbol Update
+* Market Data Indices Update
+* Market Data Depth Update
+* Market Data Lite-Mode
+* Market Data Unsubscribe
+* Market Data Channel Resume
+
+## Supported Platforms
+
+| Platform | Library Output |
+|----------|----------------|
+| **macOS** | `libfyers-api-c.dylib` |
+| **Linux** | `libfyers-api-c.so` |
+| **Windows** | `fyers-api-c.dll` + `fyers-api-c.lib` |
+
+## Examples
+
+Build with examples enabled:
+
+```bash
+cmake .. -DBUILD_EXAMPLES=ON
+make
+```
+
+Examples are in `build/examples/` (REST API, WebSocket data, WebSocket orders).
+
+## Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| **macOS:** `dyld: Library not loaded` | Set `DYLD_LIBRARY_PATH=/usr/local/lib` or install to `/usr/local` |
+| **Linux:** `cannot open shared object file` | Run `sudo ldconfig` or set `LD_LIBRARY_PATH=/usr/local/lib` |
+| **Windows:** `fyers-api-c.dll was not found` | Add `bin/` to PATH or copy DLL next to your executable |
+| **Missing dependencies** | Linux: install `-dev` packages; macOS: Homebrew; Windows: vcpkg |
+
+## Release Notes
+
+* Cross-platform support (macOS, Linux, Windows)
+* Shared library with proper symbol export for Windows DLL
+* CMake package config for `find_package(fyers-api-c)`
+* Smart Orders and Smart Exits API support
+* TP/SL overlay on sync place/modify; `fyers_model_attach_position_legs`
+* Reports APIs (order/trade/charges/PnL/ledger history)
+* Expired F&O historical data (expiry dates, underlying symbols, FNO expired candles)
+* Futures chain
+* Refresh token exchange (`generate_token_with_refresh_token`)
