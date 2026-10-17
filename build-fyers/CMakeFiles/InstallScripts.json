@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/TradingEngineVela/build-fyers/cmake_install.cmake",
+		"E:/TradingEngineVela/build-fyers/fyers-c-sdk/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

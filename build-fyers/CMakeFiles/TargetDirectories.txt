@@ -1,0 +1,14 @@
+E:/TradingEngineVela/build-fyers/CMakeFiles/TradingEngine.dir
+E:/TradingEngineVela/build-fyers/CMakeFiles/edit_cache.dir
+E:/TradingEngineVela/build-fyers/CMakeFiles/rebuild_cache.dir
+E:/TradingEngineVela/build-fyers/CMakeFiles/list_install_components.dir
+E:/TradingEngineVela/build-fyers/CMakeFiles/install.dir
+E:/TradingEngineVela/build-fyers/CMakeFiles/install/local.dir
+E:/TradingEngineVela/build-fyers/CMakeFiles/install/strip.dir
+E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/fyers-api-c.dir
+E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/edit_cache.dir
+E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/rebuild_cache.dir
+E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/list_install_components.dir
+E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/install.dir
+E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/install/local.dir
+E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/install/strip.dir

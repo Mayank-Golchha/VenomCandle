@@ -1,0 +1,5 @@
+1. When i am in normal candles all indicators are calculated correctly but when i shift to footprint candles the indicators are
+calculated from first live candle which is wrong ,and we should not display indicators for all historical candles also as we dont
+have footprint data for historical candles
+
+2. The price label is not coming for the sl/tp,it was supposed to show profit/loss of the trade

@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package trading.brokers.coinbase;
+
+// Project-owned normalized schema for storing/forwarding Coinbase public feed
+// messages. Coinbase's Exchange WebSocket itself sends JSON, not protobuf.
+message CoinbaseLevel {
+  string price = 1;
+  string size = 2;
+}
+
+message CoinbaseLevelChange {
+  enum Side {
+    SIDE_UNSPECIFIED = 0;
+    BUY = 1;
+    SELL = 2;
+  }
+  Side side = 1;
+  string price = 2;
+  string size = 3;
+}
+
+message CoinbaseTicker {
+  string product_id = 1;
+  string price = 2;
+  string last_size = 3;
+  string best_bid = 4;
+  string best_ask = 5;
+  string time = 6;
+  uint64 sequence = 7;
+}
+
+message CoinbaseLevel2 {
+  string product_id = 1;
+  bool is_snapshot = 2;
+  repeated CoinbaseLevel bids = 3;
+  repeated CoinbaseLevel asks = 4;
+  repeated CoinbaseLevelChange changes = 5;
+  uint64 sequence = 6;
+  string time = 7;
+}
+
+message CoinbaseMarketData {
+  oneof payload {
+    CoinbaseTicker ticker = 1;
+    CoinbaseLevel2 level2 = 2;
+  }
+}

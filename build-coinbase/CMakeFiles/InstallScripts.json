@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/TradingEngineVela/build-coinbase/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

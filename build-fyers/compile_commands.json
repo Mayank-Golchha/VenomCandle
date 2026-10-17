@@ -1,0 +1,50 @@
+[
+{
+  "directory": "E:/TradingEngineVela/build-fyers",
+  "command": "C:\\msys64\\ucrt64\\bin\\cc.exe -DFYERS_API_EXPORTS -Dfyers_api_c_EXPORTS -IC:/msys64/ucrt64/lib/cmake/libwebsockets/../../../include -I/include -IE:/TradingEngineVela/fyers-c-sdk/include -IE:/TradingEngineVela/fyers-c-sdk/src -std=gnu11 -o fyers-c-sdk\\CMakeFiles\\fyers-api-c.dir\\src\\fyers_api.c.obj -c E:\\TradingEngineVela\\fyers-c-sdk\\src\\fyers_api.c",
+  "file": "E:/TradingEngineVela/fyers-c-sdk/src/fyers_api.c",
+  "output": "E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/fyers-api-c.dir/src/fyers_api.c.obj"
+},
+{
+  "directory": "E:/TradingEngineVela/build-fyers",
+  "command": "C:\\msys64\\ucrt64\\bin\\cc.exe -DFYERS_API_EXPORTS -Dfyers_api_c_EXPORTS -IC:/msys64/ucrt64/lib/cmake/libwebsockets/../../../include -I/include -IE:/TradingEngineVela/fyers-c-sdk/include -IE:/TradingEngineVela/fyers-c-sdk/src -std=gnu11 -o fyers-c-sdk\\CMakeFiles\\fyers-api-c.dir\\src\\fyers_config.c.obj -c E:\\TradingEngineVela\\fyers-c-sdk\\src\\fyers_config.c",
+  "file": "E:/TradingEngineVela/fyers-c-sdk/src/fyers_config.c",
+  "output": "E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/fyers-api-c.dir/src/fyers_config.c.obj"
+},
+{
+  "directory": "E:/TradingEngineVela/build-fyers",
+  "command": "C:\\msys64\\ucrt64\\bin\\cc.exe -DFYERS_API_EXPORTS -Dfyers_api_c_EXPORTS -IC:/msys64/ucrt64/lib/cmake/libwebsockets/../../../include -I/include -IE:/TradingEngineVela/fyers-c-sdk/include -IE:/TradingEngineVela/fyers-c-sdk/src -std=gnu11 -o fyers-c-sdk\\CMakeFiles\\fyers-api-c.dir\\src\\fyers_logger.c.obj -c E:\\TradingEngineVela\\fyers-c-sdk\\src\\fyers_logger.c",
+  "file": "E:/TradingEngineVela/fyers-c-sdk/src/fyers_logger.c",
+  "output": "E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/fyers-api-c.dir/src/fyers_logger.c.obj"
+},
+{
+  "directory": "E:/TradingEngineVela/build-fyers",
+  "command": "C:\\msys64\\ucrt64\\bin\\cc.exe -DFYERS_API_EXPORTS -Dfyers_api_c_EXPORTS -IC:/msys64/ucrt64/lib/cmake/libwebsockets/../../../include -I/include -IE:/TradingEngineVela/fyers-c-sdk/include -IE:/TradingEngineVela/fyers-c-sdk/src -std=gnu11 -o fyers-c-sdk\\CMakeFiles\\fyers-api-c.dir\\src\\fyers_http_client.c.obj -c E:\\TradingEngineVela\\fyers-c-sdk\\src\\fyers_http_client.c",
+  "file": "E:/TradingEngineVela/fyers-c-sdk/src/fyers_http_client.c",
+  "output": "E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/fyers-api-c.dir/src/fyers_http_client.c.obj"
+},
+{
+  "directory": "E:/TradingEngineVela/build-fyers",
+  "command": "C:\\msys64\\ucrt64\\bin\\cc.exe -DFYERS_API_EXPORTS -Dfyers_api_c_EXPORTS -IC:/msys64/ucrt64/lib/cmake/libwebsockets/../../../include -I/include -IE:/TradingEngineVela/fyers-c-sdk/include -IE:/TradingEngineVela/fyers-c-sdk/src -std=gnu11 -o fyers-c-sdk\\CMakeFiles\\fyers-api-c.dir\\src\\fyers_session.c.obj -c E:\\TradingEngineVela\\fyers-c-sdk\\src\\fyers_session.c",
+  "file": "E:/TradingEngineVela/fyers-c-sdk/src/fyers_session.c",
+  "output": "E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/fyers-api-c.dir/src/fyers_session.c.obj"
+},
+{
+  "directory": "E:/TradingEngineVela/build-fyers",
+  "command": "C:\\msys64\\ucrt64\\bin\\cc.exe -DFYERS_API_EXPORTS -Dfyers_api_c_EXPORTS -IC:/msys64/ucrt64/lib/cmake/libwebsockets/../../../include -I/include -IE:/TradingEngineVela/fyers-c-sdk/include -IE:/TradingEngineVela/fyers-c-sdk/src -std=gnu11 -o fyers-c-sdk\\CMakeFiles\\fyers-api-c.dir\\src\\fyers_model.c.obj -c E:\\TradingEngineVela\\fyers-c-sdk\\src\\fyers_model.c",
+  "file": "E:/TradingEngineVela/fyers-c-sdk/src/fyers_model.c",
+  "output": "E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/fyers-api-c.dir/src/fyers_model.c.obj"
+},
+{
+  "directory": "E:/TradingEngineVela/build-fyers",
+  "command": "C:\\msys64\\ucrt64\\bin\\cc.exe -DFYERS_API_EXPORTS -Dfyers_api_c_EXPORTS -IC:/msys64/ucrt64/lib/cmake/libwebsockets/../../../include -I/include -IE:/TradingEngineVela/fyers-c-sdk/include -IE:/TradingEngineVela/fyers-c-sdk/src -std=gnu11 -o fyers-c-sdk\\CMakeFiles\\fyers-api-c.dir\\src\\fyers_data_ws.c.obj -c E:\\TradingEngineVela\\fyers-c-sdk\\src\\fyers_data_ws.c",
+  "file": "E:/TradingEngineVela/fyers-c-sdk/src/fyers_data_ws.c",
+  "output": "E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/fyers-api-c.dir/src/fyers_data_ws.c.obj"
+},
+{
+  "directory": "E:/TradingEngineVela/build-fyers",
+  "command": "C:\\msys64\\ucrt64\\bin\\cc.exe -DFYERS_API_EXPORTS -Dfyers_api_c_EXPORTS -IC:/msys64/ucrt64/lib/cmake/libwebsockets/../../../include -I/include -IE:/TradingEngineVela/fyers-c-sdk/include -IE:/TradingEngineVela/fyers-c-sdk/src -std=gnu11 -o fyers-c-sdk\\CMakeFiles\\fyers-api-c.dir\\src\\fyers_order_ws.c.obj -c E:\\TradingEngineVela\\fyers-c-sdk\\src\\fyers_order_ws.c",
+  "file": "E:/TradingEngineVela/fyers-c-sdk/src/fyers_order_ws.c",
+  "output": "E:/TradingEngineVela/build-fyers/fyers-c-sdk/CMakeFiles/fyers-api-c.dir/src/fyers_order_ws.c.obj"
+}
+]

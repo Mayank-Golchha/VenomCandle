@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="backend-default-symbol" content="__BACKEND_DEFAULT_SYMBOL__">
+  <meta name="backend-broker" content="__BACKEND_BROKER__">
+  <title>VenomCandle</title>
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
+
+  <style>
+    :root {
+      --bg: #05070b;
+      --text: #dbeafe;
+      --border: #142033;
+      --blue: #3b82f6;
+      --muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    .venom-logo {
+      display: block;
+      width: 32px;
+      height: 32px;
+      flex: 0 0 auto;
+      object-fit: contain;
+      margin: 0 8px;
+    }
+
+    #pine-editor button,
+    #pine-editor select,
+    #pine-editor input[type="search"],
+    #pine-script-name {
+      border: 1px solid var(--pine-border-strong);
+      border-radius: 5px;
+      background: var(--pine-surface);
+      color: var(--pine-text);
+      font: inherit;
+    }
+
+    #pine-editor button:hover {
+      background: var(--pine-border);
+    }
+
+    #pine-editor {
+      --pine-bg: #151619;
+      --pine-surface: rgb(28, 29, 32);
+      --pine-border: #2a2b30;
+      --pine-border-strong: #34353b;
+      --pine-text: #d1d4dc;
+      --pine-muted: #868a96;
+      --pine-accent: #f51515;
+      position: fixed;
+      z-index: 100;
+      top: 48px;
+      right: 12px;
+      width: min(560px, calc(100vw - 24px));
+      height: min(680px, calc(100vh - 54px));
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--pine-border);
+      background: var(--pine-bg);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      color: var(--pine-text);
+      font: 12px/1.5 sans-serif;
+    }
+
+    #pine-editor[hidden] { display: none; }
+
+    /* Keep Vela popups above the chart if a menu's inline layer z-index is cleared
+       during pointer movement while its open state is still active. */
+    .vela-ui-layer {
+      z-index: var(--z-index, var(--vela-z-menu, 50));
+    }
+
+    .pine-editor-header,
+    .pine-editor-toolbar,
+    .pine-editor-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 11px;
+      border-bottom: 1px solid var(--pine-border);
+    }
+
+    .pine-editor-header strong { font-size: 13px; }
+    .pine-editor-header button:last-child { margin-left: auto; }
+    #pine-editor button { padding: 6px 9px; cursor: pointer; white-space: nowrap; }
+    #pine-indicator-search { min-width: 90px; flex: 1; padding: 6px 8px; }
+    #pine-script-list { min-width: 0; flex: 1; padding: 6px 8px; }
+    #pine-template-list { min-width: 0; flex: 1; padding: 6px 8px; }
+    #pine-script-name { width: 100%; padding: 7px 9px; }
+
+    #pine-script-source {
+      flex: 1;
+      width: 100%;
+      min-height: 150px;
+      resize: none;
+      border: 0;
+      outline: none;
+      padding: 13px;
+      background: var(--pine-bg);
+      color: var(--pine-text);
+      font: 13px/1.55 Consolas, 'Cascadia Code', monospace;
+      tab-size: 4;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    .pine-editor-actions { border-top: 1px solid var(--pine-border); border-bottom: 0; flex-wrap: wrap; }
+    #pine-run-script { background: var(--pine-accent) !important; border-color: var(--pine-accent) !important; }
+    #pine-editor-status { width: 100%; min-height: 16px; color: var(--pine-muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+    
+    /*  */
+
+    /* ── Chart area (Vela fills this) ── */
+    #chart-area {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      transition: width 0.05s ease;
+
+    }
+
+    body.order-ticket-open #chart-area {
+      width: calc(100% - 396px);
+    }
+
+    @media (max-width: 760px) {
+      body.order-ticket-open #chart-area {
+        width: 100%;
+      }
+    }
+
+    #chart {
+      position: absolute;
+      inset: 0;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    #big-trades-panel { position:fixed; z-index:110; top:52px; right:12px; width:min(370px,calc(100vw - 24px)); max-height:calc(100vh - 64px); overflow:auto; padding:14px; border:1px solid #28364a; border-radius:8px; background:#090d14; color:#dbeafe; box-shadow:0 16px 48px #000a; font-size:12px; }
+    #big-trades-panel[hidden] { display:none; }
+    #big-trades-panel h3 { margin:0 0 10px; font-size:14px; }
+    #big-trades-panel fieldset { border:1px solid #263448; border-radius:6px; margin:8px 0; padding:9px; }
+    #big-trades-panel legend { color:#91a4ba; padding:0 4px; }
+    #big-trades-panel label { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:6px 0; }
+    #big-trades-panel input,#big-trades-panel select,#big-trades-panel button { max-width:160px; border:1px solid #28364a; border-radius:4px; background:#101722; color:#dbeafe; padding:5px; }
+    #big-trades-panel input[type=checkbox] { margin-right:auto; }
+    #big-trades-panel input[type=color] { width:48px; padding:1px; }
+    #big-trades-status { color:#91a4ba; line-height:1.5; }
+
+    .vela-widget-topbar button.vela-order-buy { background:#087f5b; border-color:#087f5b; color:#fff; }
+    .vela-widget-topbar button.vela-order-sell { background:#b42332; border-color:#b42332; color:#fff; }
+    .vela-widget-topbar button.vela-order-buy:hover { background:#0a966b; }
+    .vela-widget-topbar button.vela-order-sell:hover { background:#ca2e3e; }
+
+    #order-ticket-backdrop { position:fixed; inset:0; z-index:200; display:flex; justify-content:flex-end; padding:0; background:transparent; pointer-events:none; }
+    #order-ticket-backdrop[hidden] { display:none; }
+    #order-ticket { width:min(396px,100vw); height:100%; overflow:auto; border:1px solid #303235; border-right:0; background:#181a1b; color:#e2e3e3; box-shadow:-12px 0 36px #0007; font-size:14px; pointer-events:auto; }
+    #order-ticket header,#order-ticket footer { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 20px; border-bottom:1px solid #2d3031; }
+    #order-ticket header strong { font-size:15px; }
+    #order-ticket header button,#order-ticket footer button { border:0; border-radius:5px; padding:7px 10px; background:transparent; color:#dbe0e1; cursor:pointer; font-size:20px; }
+    #order-ticket form { display:grid; grid-template-columns:1fr 1fr; gap:13px 12px; padding:16px 20px; }
+    #order-ticket label { display:flex; flex-direction:column; gap:6px; color:#a9adae; }
+    #order-ticket label[hidden] { display:none; }
+    #order-ticket input,#order-ticket select { width:100%; min-height:40px; padding:7px 9px; border:1px solid #414547; border-radius:8px; background:#191b1c; color:#e5edf8; }
+    #order-ticket .wide,#order-ticket-status { grid-column:1/-1; }
+    #order-ticket-status { min-height:36px; color:#f6c56b; line-height:1.45; }
+    #order-ticket footer { border-top:1px solid #2d3031; border-bottom:0; justify-content:flex-end; }
+    #order-ticket-submit { background:#0b43c6 !important; border-color:#0b43c6 !important; font-weight:700; }
+    #order-ticket .ticket-instrument { min-width:0; flex:1; display:flex; align-items:center; gap:9px; }
+    #order-ticket .tv-mark { display:grid; place-items:center; width:30px; height:30px; border-radius:5px; background:#303334; color:rgb(246, 93, 93); font-weight:800; }
+    #order-ticket .instrument-symbol { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700; }
+    #order-ticket .timeframe-pill { border-radius:50%; padding:3px 7px; background:#493312; color:#f2a900; font-weight:700; }
+    #order-ticket .ticket-header-actions { display:flex; gap:7px; }
+    #order-ticket .ticket-header-actions button { font-size:18px; }
+    #order-ticket .ticket-tabs { display:flex; grid-column:1/-1; border-radius:9px; background:#222526; padding:4px; }
+    #order-ticket .ticket-tabs button { flex:1; border:0; border-radius:7px; padding:9px 3px; background:transparent; color:#c4c7c8; font-size:14px; cursor:pointer; }
+    #order-ticket .ticket-tabs button.active { background:#17191a; color:#fff; }
+    #order-ticket .quote-strip { grid-column:1/-1; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; border-radius:9px; background:#242728; overflow:hidden; }
+    #order-ticket .quote-side { padding:11px 12px; }
+    #order-ticket .quote-side:last-child { text-align:right; }
+    #order-ticket .quote-side b,#order-ticket .quote-side span { display:block; }
+    #order-ticket .quote-sell { color:#e56a71; } #order-ticket .quote-buy { color:#398bff; }
+    #order-ticket .quote-mid { padding:3px 7px; background:#151718; border-radius:5px; font-size:12px; }
+    #order-ticket .section-title { grid-column:1/-1; margin-top:4px; color:#e2e3e3; font-weight:700; }
+    #order-ticket .toggle-row { flex-direction:row; align-items:center; justify-content:space-between; }
+    #order-ticket .ticket-switch { appearance:none; width:44px !important; min-height:26px !important; height:26px; border:0 !important; border-radius:16px !important; background:#4a4f51 !important; cursor:pointer; }
+    #order-ticket .ticket-switch:checked { background:#0b43c6 !important; }
+    #order-ticket .ticket-switch::before { content:""; display:block; width:20px; height:20px; border-radius:50%; background:#181a1b; transition:transform .12s; }
+    #order-ticket .ticket-switch:checked::before { transform:translateX(18px); }
+    #order-ticket .action-row { grid-column:1/-1; display:grid; gap:7px; margin-top:8px; }
+    #order-ticket .action-row button { border:0; border-radius:10px; padding:14px; background:#0b43c6; color:#fff; font-weight:700; font-size:16px; cursor:pointer; }
+    #order-ticket .action-row small { text-align:center; color:#dce4ff; }
+    #order-ticket .form-hidden-select { position:absolute; width:1px !important; height:1px; opacity:0; pointer-events:none; }
+
+    @media (max-width: 760px) {
+      #chart { right: 28px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <section id="big-trades-panel" aria-label="Big Trades settings" hidden>
+    <h3>Big Trades</h3>
+    <fieldset><legend>Data Settings</legend>
+      <label>Recent aggregated samples (N)<input data-bt="sampleCount" type="number" min="20" max="20000"></label>
+      <label>Input Type<select data-bt="inputType"><option value="quantity">Trade size</option><option value="notional">Trade value</option><option value="side">Bid / ask size</option></select></label>
+      <label>Filter Mode<select data-bt="filterMode"><option value="automatic">Automatic</option><option value="manual">Manual</option></select></label>
+      <label>Minimum trade size<input data-bt="minTradeSize" type="number" min="0" step="any"></label>
+      <label>Maximum trade size<input data-bt="maxTradeSize" type="number" min="0" step="any"></label>
+      <label>Minimum recent size percentile<input data-bt="minSizePercentile" type="number" min="50" max="99" step="1"></label>
+      <small style="display:block;color:#91a4ba;line-height:1.45;">For example, 99 plots only when packet size exceeds the 99th percentile of the last N aggregated samples. Equal sizes at the cutoff are excluded.</small>
+    </fieldset>
+    <fieldset><legend>Automatic Analysis</legend>
+      <label>Intensity<select data-bt="intensity"><option>Low</option><option>Medium</option><option>Strong</option></select></label>
+      <label>Recalibrate<select data-bt="recalibration"><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
+      <div id="big-trades-status" role="status"></div>
+      <div id="big-trades-flow-stats" role="status" style="margin-top:5px;color:#91a4ba;"></div>
+    </fieldset>
+    <fieldset><legend>Plot Settings</legend>
+      <label>Marker shape<select data-bt="shape"><option value="circle">Circle</option></select></label>
+      <label>Hollow fill<input data-bt="hollow" type="checkbox"></label>
+      <label>Show text<input data-bt="showText" type="checkbox"></label>
+      <label>Standard deviation scaling<input data-bt="stdScaling" type="checkbox"></label>
+      <label>Minimum size<input data-bt="minSize" type="number" min="2" max="100"></label>
+      <label>Maximum size<input data-bt="maxSize" type="number" min="2" max="100"></label>
+      <label>Minimum opacity<input data-bt="minOpacity" type="number" min="0" max="100"></label>
+      <label>Maximum opacity<input data-bt="maxOpacity" type="number" min="0" max="100"></label>
+      <label>Ask color<input data-bt="askColor" type="color"></label>
+      <label>Bid color<input data-bt="bidColor" type="color"></label>
+      <label>Plot only inside bar<input data-bt="insideBar" type="checkbox"></label>
+      <label>Text size<input data-bt="textSize" type="number" min="7" max="32"></label>
+      <label>Text color<input data-bt="textColor" type="color"></label>
+    </fieldset>
+    <button id="big-trades-close" type="button">Close</button>
+  </section>
+
+  <section id="pine-editor" aria-label="Pine Script editor" hidden>
+    <div class="pine-editor-header">
+      <strong>Custom Pine Indicators</strong>
+      <button id="pine-new-script" type="button">New</button>
+      <button id="pine-close-editor" type="button" aria-label="Close Pine editor">Close</button>
+    </div>
+    <div class="pine-editor-toolbar">
+      <input id="pine-indicator-search" type="search" placeholder="Search saved indicators" aria-label="Search saved indicators">
+      <select id="pine-script-list" aria-label="Saved indicators"></select>
+      <button id="pine-add-selected" type="button">Add to chart</button>
+      <button id="pine-import-script" type="button">Import .pine</button>
+      <input id="pine-import-file" type="file" accept=".pine,.txt" hidden>
+    </div>
+    <div class="pine-editor-toolbar">
+      <select id="pine-template-list" aria-label="Footprint script examples">
+        <option value="">Footprint script examples…</option>
+        <option value="live-delta">Live footprint delta</option>
+        <option value="delta-divergence">Volume delta divergence</option>
+        <option value="imbalance-zones">Footprint imbalance zones</option>
+        <option value="level-volume">Volume at a footprint price</option>
+      </select>
+      <button id="pine-use-template" type="button">Load example</button>
+    </div>
+    <!-- <details style="padding: 8px 12px; color: var(--pine-muted); font-size: 12px; border-bottom: 1px solid var(--pine-border);">
+      <summary style="cursor: pointer;">Footprint data available in scripts</summary>
+      <div style="padding-top: 7px; line-height: 1.6;">
+        Built-in examples use the chart symbol configured by the application. In imported scripts, set <code>fpTicker</code> to the provider-qualified chart symbol (for example, <code>"fyers:EXCHANGE:SYMBOL"</code>), then request <code>fpTicker + ".FP_DELTA"</code>, <code>".FP_BUY"</code>, <code>".FP_SELL"</code>, <code>".FP_OTHER"</code> or <code>".FP_READY"</code> with <code>request.security(..., timeframe.period, close)</code>. These series are registered by the Fyers provider; price-keyed <code>.FP_BUY_AT_&lt;price × 100&gt;</code> and sell equivalents are resolved dynamically.
+        For the strongest diagonal imbalance on each candle use <code>.FP_BUY_IMBALANCE_PRICE</code>/<code>.FP_BUY_IMBALANCE_RATIO</code> or the sell equivalents. Exact level volume is available as <code>.FP_BUY_AT_&lt;price × 100&gt;</code> and <code>.FP_SELL_AT_&lt;price × 100&gt;</code> (for example, 149.50 → <code>14950</code>). Historical candles without stored footprint ticks have <code>FP_READY = 0</code>.
+      </div>
+    </details> -->
+    <div style="padding: 9px 11px; border-bottom: 1px solid var(--pine-border);">
+      <input id="pine-script-name" type="text" maxlength="80" placeholder="Indicator name">
+    </div>
+    <textarea id="pine-script-source" spellcheck="false" aria-label="Pine Script source"></textarea>
+    <div class="pine-editor-actions">
+      <button id="pine-save-browser" type="button">Save locally</button>
+      <button id="pine-save-file" type="button">Save .pine file</button>
+      <button id="pine-run-script" type="button">Add to chart</button>
+      <span id="pine-editor-status" role="status">Scripts are saved in this browser. Export a .pine file to store one on your computer.</span>
+    </div>
+  </section>
+
+  <div id="chart-area">
+    <div id="chart"></div>
+  </div>
+
+  <!-- Vela is imported inside app.js as an ESM module -->
+  <script type="module" src="app.js"></script>
+</body>
+
+</html>
